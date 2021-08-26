@@ -16,6 +16,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var chosenLatitude = Double()
     var chosenLongitude = Double()
     
+    var chosenID : UUID?
+    
     @IBOutlet weak var mapView: MKMapView!
     //pronalazenje lokacije korisnika
     var locationManager = CLLocationManager()
@@ -33,6 +35,13 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        //provera da li je izabrano nesto pri slanju
+        if chosenID?.uuidString != "" {
+            nameText.text = chosenID?.uuidString
+            //napisati fetch za izabrani titleId 
+            
+        }
+        
         
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(choseLocation(gestureRecognizer:)))
         gestureRecognizer.minimumPressDuration = 3
@@ -41,6 +50,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         //hide keyboard
         let gestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(gestureRecognizer2)
+        
+        
     }
     
     @objc func hideKeyboard(){

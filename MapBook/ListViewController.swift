@@ -12,7 +12,10 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var tableView: UITableView!
     
-    var placesTitles = [String]()
+    var titlesArray = [String]()
+    var idArray = [UUID]()
+    
+    var selectedID : UUID?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +35,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @objc func getData(){
         
-        placesTitles.removeAll(keepingCapacity: false)
+        titlesArray.removeAll(keepingCapacity: false)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -44,12 +47,17 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
             let results = try context.fetch(fetchRequest)
             if results.count > 0 {
                 
-                self.placesTitles.removeAll(keepingCapacity: false)
+                self.titlesArray.removeAll(keepingCapacity: false)
+                self.idArray.removeAll(keepingCapacity: false)
                 
                 for result in results as! [NSManagedObject] {
                     if let title = result.value(forKey: "title") as? String {
-                        self.placesTitles.append(title)
+                        self.titlesArray.append(title)
                     }
+                    if let id = result.value(forKey: "id") as? UUID {
+                        self.idArray.append(id)
+                    }
+                    
                 }
                 
                 tableView.reloadData()
@@ -68,15 +76,35 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return placesTitles.count
+        return titlesArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        cell.textLabel?.text = placesTitles[indexPath.row]
+        cell.textLabel?.text = titlesArray[indexPath.row]
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedID = idArray[indexPath.row]
+        
+        
+        
+        
+        performSegue(withIdentifier: "toViewController", sender: nil)
+        
+        
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "toViewController" {
+            let destinationVC = segue.destination as! ViewController
+            
+            destinationVC.chosenID = selectedID
+        }
+    }
     
     
     
