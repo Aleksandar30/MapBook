@@ -22,24 +22,41 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(addButtonClicked))
         
+        tableView.reloadData()
         getData()
         
     }
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(getData), name: NSNotification.Name("newPlace"), object: nil)
+    }
     
-    func getData(){
+    @objc func getData(){
+        
+        placesTitles.removeAll(keepingCapacity: false)
+        
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Places")
+        fetchRequest.returnsObjectsAsFaults = false
         
         do {
             let results = try context.fetch(fetchRequest)
-            for result in results as! [NSManagedObject] {
-                placesTitles.append(result.value(forKey: "title") as! String)
+            if results.count > 0 {
                 
+                self.placesTitles.removeAll(keepingCapacity: false)
+                
+                for result in results as! [NSManagedObject] {
+                    if let title = result.value(forKey: "title") as? String {
+                        self.placesTitles.append(title)
+                    }
+                }
+                
+                tableView.reloadData()
+                print("reloaded table")
             }
             
-            print("fetched")
+
         } catch {
             print("fetching failed")
         }
