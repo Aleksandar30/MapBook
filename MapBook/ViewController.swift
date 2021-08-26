@@ -26,7 +26,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        // postavljanje mape na odredjenu lokaciju
         mapView.delegate = self
         locationManager.delegate = self
         //preciznost lokacije
@@ -38,11 +38,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         //provera da li je izabrano nesto pri slanju
         if chosenID?.uuidString != "" {
             nameText.text = chosenID?.uuidString
-            //napisati fetch za izabrani titleId 
+            //napisati fetch za izabrani titleId
             
         }
         
-        
+        //biranje lokacije
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(choseLocation(gestureRecognizer:)))
         gestureRecognizer.minimumPressDuration = 3
         mapView.addGestureRecognizer(gestureRecognizer)
@@ -78,7 +78,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     
-    //didupdate
+    //did update
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude: locations[0].coordinate.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
@@ -99,7 +99,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         newPlace.setValue(UUID(), forKey: "id")
         newPlace.setValue(nameText.text , forKey: "title")
         newPlace.setValue(commentText.text , forKey: "subtitle")
-        
         newPlace.setValue(chosenLongitude, forKey: "longitude")
         newPlace.setValue(chosenLatitude, forKey: "latitude")
         
