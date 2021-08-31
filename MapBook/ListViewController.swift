@@ -16,6 +16,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     var idArray = [UUID]()
     
     var selectedID : UUID?
+    var selectedTitle = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     @objc func getData(){
         
         titlesArray.removeAll(keepingCapacity: false)
+        idArray.removeAll(keepingCapacity: false)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
